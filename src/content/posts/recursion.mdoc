@@ -1,0 +1,146 @@
+---
+title: '# Recursión'
+draft: false
+description: Explicación sobre la recursión en Racket
+authors:
+  - chat-gpt
+major:
+  discriminant: infor
+  value:
+    discriminant: '3'
+    value: P1
+---
+# ¿Qué es la recursión?
+
+Recurrencia, recursión o recursividad es la forma en la cual se especifica un proceso basado en su propia definición
+
+Resolver un problema mediante recursión significa que la solución depende de la soluciones de pequeñas instancias del mismo problema
+
+La mayoría de los lenguajes de programación dan soporte a la recursión permitiendo a una función llamarse a si misma desde el texto del programa
+
+Los lenguajes imperativos definen las estructuras de loops como while y for que son usadas pare realizar tareas repetitivas. Algunos lenguajes de programación funcionales no definen estructuras de loops sino que posibilitan la recursión llamado código de forma repetitiva.
+
+La teoría de la computabilidad ha demostrado que estos dos tipos de lenguajes son matemáticamente equivalentes, es decir que pueden resolver los mismos tipos de problemas, aunque los lenguajes funcionales carezcan de las típicas estructuras while y for.
+
+Un algoritmo recursivo es un algoritmo que expresa la solución de un problema en terminos de una llamada a si mismo. La llamada a si mismo se conoce como llamada recursiva o llamada recurrente.
+
+Generalmente, si la primera llamada al subprograma se plantea sobre un problema de tamaño u orden N, cada nueva ejecución recurrente del mismo se planteara sobre problemas, de igual naturaleza que el original, pero de una tamaño menor que N. De esta forma, al ir reduciendo progresivamente la complejidad del problema que resolver, llegara un momento en que su resolución sea mas o menos trivial(o, al menos, suficientemente manejable como para resolverlo de forma no recursiva). En esa situación diremos que estamos ante un caso base de la recursividad.
+
+Las claves para construir un subprograma recurrente son:
+
+\*Cada llamada recurrente se debería definir sobre un problema de mano complejidad (algo mas fácil de resolver).
+
+\*Ha de existir al menos un caso base para evitar que la recurrencia sea infinita.
+
+Es frecuente que los algoritmos recurrentes sean mas ineficientes en tiempo que los interactivos, aunque suelen ser muchos mas breves en espacio.
+
+```
+recursiva(int num) {
+	if (num < 5) {
+		printf(num);
+		recursiva(num+1); //Lo mejor es que la 'llamada recursion' este al final de la funcion
+	}
+}
+```
+
+# Tipos de recursiones
+
+### Recursión de Uni-condisional
+
+Esta recursión se refiere a un caso de recursión donde existe una sola condición que determina si se hace o no la llamada recursiva. No hay ramificaciones múltiples ni casos adicionales que evaluar; solo una condición simple que decide si la recursión continua o se detiene, la llamada recursiva esta al final.
+
+```
+(DEFUN func (X)
+	(COND (dondicion-final valor-fianl)
+		(T (func x-reducido))))
+
+```
+
+*//ASI ES COMO NO DEBES HACERLO:*
+
+```
+(define (encontrar elemento lista)
+	(cond [(null? lista) #f]
+	[(equal? elemento (car lista)) #t]
+	[else (encontrar elemento (cdr lista))]))
+```
+
+*//ASI SI:*
+
+```
+(define (encontrar elemento lista)
+	(cond [(null? lista) #f]
+	[(equal? elemento (car lista)) #t]
+	[else (encontrar elemento (cdr lista))]))
+
+```
+
+### Recursion Bi-condisional
+
+Su nombre lo dice todo, la llamada recursiva sigue siendo la ultima instrucción.
+
+### Aumentativa Uni-condicional
+
+Es un patrón de recursión en el que una función recursiva incrementa o modifica de alguna manera sus parámetros en cada llamada recursiva, siguiendo un solo camino condicional.
+
+```
+(define (tamano lista)
+	(cond [(empty? lista) 0]
+	[else (+ 1 (tamano (cdr lista)))]))
+
+(trace tamano)
+```
+
+### Recursión aumentativa estructurada
+
+```
+(define (generar-lista tamano elemento)
+	(cond [(equal? 0 tamano) null]
+	[else (cons elemento (generar-lista (- tamano 1) elemento))]))
+```
+
+==Nota: Es aumentativa porque aumenta el contenido de la lista, es un acumulador(el anterior no este), pero en realidad esto también usa pila (como el anterior xd).==
+
+### Recursión simultanea sobre varias variables
+
+La recursión simultanea sobre varia variables es un patrón en el cual una función recursiva opera sobre múltiples variables o parámetros simultáneamente, modificando o actualizando los paramentos
+
+```
+(define (unir listaA listaB)
+	(cond [(null? lista A) listaB])
+	[(null? lista B) listaA]
+	[else (cons (car listaA) (cons (car listaB) (unir (cdr listaA) (cdr listaB))))]))
+
+ENTRADA '(a b c) '(1 2 3)s
+RESULTADO '(a 1 b 2 c 3)
+```
+
+### Recursión aumentativa condicional
+
+Donde en cada llamada recursiva en cada llamada se incrementa o modifica una valor basado en una condición especifica.
+
+```
+(define (contar-numeros lista)
+	(cond [(null? lista) 0]
+	[(number? (car lista))(+ 1 (contar-numeros (cdr lista)))]
+	[else (contar-numero (cdr lista))]))
+```
+
+### Recursión cola
+
+A diferencia de la recursión simple, donde cada función se llama a si misma una sola vez, la recursión aquí es múltiple.
+
+Donde la ultima operación de una función recursiva es llamada a si misma, sin ninguna operación pendiente después de esta llamada. Este tipo de recursión es especialmente eficiente.
+
+==Características OPTIMIZACION Y EFICIENCIA.==
+
+Ejemplo:
+
+```
+(define (tamano-2 lista)
+	(tamano-aux lista 0))
+
+(define (tamano-aux lista result)
+	(cond [(null? lista) result]
+	[else (tamano-aux (cdr lista)(+ 1 result))]))
+```
